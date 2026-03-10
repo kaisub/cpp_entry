@@ -1,20 +1,45 @@
 @echo off
 setlocal
 
-:: Navigate to the project root directory
-cd /d "%~dp0.."
+:: Przejdź do głównego folderu projektu
+cd /d "%~dp0\.."
 
-echo [INFO] Cleaning project...
-
-:: Remove the generated directories if they exist
-if exist build rd /s /q build
-if exist build_win rd /s /q build_win
-if exist bin rd /s /q bin
-if exist coverage rd /s /q coverage
-if exist deps rd /s /q deps
-
-echo [SUCCESS] Workspace cleaned.
+echo [INFO] =================================================
+echo [INFO] Running Clean (Windows) keeping _deps...
+echo [INFO] =================================================
 echo.
 
-:: Pause unless NOPAUSE is set
-if not "%NOPAUSE%"=="1" pause
+:: Wyczyść domyślny build oraz build dla cross-kompilacji
+call :SmartClean build
+call :SmartClean build_win
+
+:: Remove the generated directories if they exist
+if exist coverage rd /s /q coverage
+
+echo.
+echo [SUCCESS] Clean completed!
+exit /b 0
+
+:: --- Funkcja czyszcząca ---
+:SmartClean
+set "TARGET_DIR=%~1"
+if exist "%TARGET_DIR%" (
+    echo [INFO] Cleaning '%TARGET_DIR%' directory...
+    
+    :: 1. Usuń wszystkie podfoldery Z WYJĄTKIEM folderu _deps
+    for /d %%D in ("%TARGET_DIR%\*") do (
+        if /i not "%%~nxD"=="_deps" (
+            rmdir /s /q "%%D"
+        )
+    )
+    
+    :: 2. Usuń wszystkie pliki luzem w folderze (m.in. CMakeCache.txt)
+    for %%F in ("%TARGET_DIR%\*") do (
+        del /f /q "%%F"
+    )
+    
+    echo [INFO] '%TARGET_DIR%' cleaned. '_deps' are safe.
+) else (
+    echo [INFO] Directory '%TARGET_DIR%' does not exist. Skipping.
+)
+exit /b 0

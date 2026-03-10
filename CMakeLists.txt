@@ -33,6 +33,11 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_BIN_DIR})
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Disable scanning for C++20 Modules dependencies.
+# This prevents CMake from injecting '-fdeps-format=p1689r5' flags 
+# into compile_commands.json, which Clang-Tidy currently does not support.
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+
 # --- Code Coverage Flags (GCC / Clang on MSYS2 / Linux) ---
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang" AND NOT MSVC)
     message(STATUS "Enabling Code Coverage flags for GCC/Clang")
@@ -60,7 +65,7 @@ endif()
 
 # --- FetchContent: Magic Enum ---
 # Store fetched dependencies in the deps/ folder
-set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/deps")
+#set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/deps")
 include(FetchContent)
 FetchContent_Declare(
     magic_enum
@@ -105,7 +110,7 @@ if(BUILD_TESTING)
     enable_testing()
     
     # Google Test setup
-    set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/deps")
+#    set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/deps")
     FetchContent_Declare(
         googletest
         URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
@@ -144,7 +149,7 @@ if(CPPCHECK_PROGRAM)
             --inline-suppr
             --suppress=missingIncludeSystem
             -I ${CMAKE_SOURCE_DIR}/inc
-            -I ${CMAKE_SOURCE_DIR}/deps/magic_enum-src/include  # Provide magic_enum to cppcheck
+            -I ${CMAKE_BINARY_DIR}/_deps/magic_enum-src/include  # Provide magic_enum to cppcheck
             ${CMAKE_SOURCE_DIR}/src
             ${CMAKE_SOURCE_DIR}/main.cpp
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
