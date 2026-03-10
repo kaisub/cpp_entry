@@ -4,9 +4,9 @@
 
 constexpr const char* dummy_func_message = "hello from func\n";
 
-TEST(DummyTest, FunctionCall) {
+TEST(DummyTest, callDummyExamplesDoesNotCrash) {
     // Verify function can be called without crashing
-    dummyFunc(dummy_func_message);
+    callDummyExamples();
     SUCCEED();
 }
 

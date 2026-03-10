@@ -1,4 +1,6 @@
 #!/bin/bash
+# Stop script execution on any error
+set -e
 
 # Navigate to the project root
 cd "$(dirname "$0")/.."
@@ -14,20 +16,18 @@ mkdir -p coverage
 echo "[INFO] Generating HTML report with gcovr..."
 
 # Using 'python -m gcovr' and explicitly pointing to UCRT64 gcov
+# Added --exclude-throw-branches and --exclude-unreachable-branches to fix Branch Coverage
 /ucrt64/bin/python.exe -m gcovr \
     -r . \
     --gcov-executable /ucrt64/bin/gcov.exe \
     --filter src/ \
     --filter inc/ \
     --object-directory build/ \
+    --exclude-throw-branches \
+    --exclude-unreachable-branches \
     --html --html-details \
     -o coverage/index.html
 
-if [ $? -eq 0 ]; then
-    echo "[SUCCESS] Coverage report generated in: coverage/index.html"
-    # Convert POSIX path to Windows path for explorer
-    explorer.exe $(cygpath -w coverage/index.html)
-else
-    echo "[ERROR] gcovr failed to generate report. Did you run the tests first?"
-    exit 1
-fi
+echo "[SUCCESS] Coverage report generated in: coverage/index.html"
+# Convert POSIX path to Windows path for explorer
+explorer.exe $(cygpath -w coverage/index.html)

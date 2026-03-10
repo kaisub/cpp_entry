@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.15...3.28)
 
 option(BUILD_TESTING "Build unit tests" ON)
 
 # Generate project name based on the root folder name
 get_filename_component(ProjectId ${CMAKE_SOURCE_DIR} NAME)
 string(REPLACE " " "_" ProjectId ${ProjectId})
-project(${ProjectId})
+project(cpp_entry VERSION 1.0.0 LANGUAGES CXX)
 
 # Tells CMake to create a JSON file containing all compiler commands for the whole project
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -60,8 +60,9 @@ endif()
 
 # Collection of source and header files
 # Use GLOB_RECURSE to find files in all subdirectories (like src/dummy)
-file(GLOB_RECURSE SRC_LIST "src/*.cpp")
-file(GLOB_RECURSE libs_SRC "inc/*.h" "inc/*.hpp")
+# Using CONFIGURE_DEPENDS forces CMake to check directory contents at build time
+file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS "src/*.cpp")
+file(GLOB_RECURSE libs_SRC CONFIGURE_DEPENDS "inc/*.h" "inc/*.hpp")
 
 # Create library (to separate logic from main.cpp)
 add_library(${PROJECT_NAME}_lib STATIC ${SRC_LIST} ${libs_SRC})
@@ -75,6 +76,12 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_lib)
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     target_compile_options(${PROJECT_NAME}_lib PRIVATE -Wall -Wextra -Wpedantic)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    # Remove default /W3 from CMAKE_CXX_FLAGS to prevent D9025 warning
+    if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+        string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    endif()
+
+    # Apply strict warning level at the target level
     target_compile_options(${PROJECT_NAME}_lib PRIVATE /W4)
 endif()
 

@@ -3,6 +3,12 @@
 pipeline {
     agent any
 
+    options {
+        // Keep only the last 3 builds to save disk space on GCP
+        buildDiscarder(logRotator(numToKeepStr: '3'))
+        timestamps()
+    }
+
     environment {
         BUILD_DIR = "build_coverage"
     }
