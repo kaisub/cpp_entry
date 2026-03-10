@@ -13,4 +13,4 @@ checkersReport
 // unusedFunction:src/legacy_module.cpp
 
 // Suppress all errors inside a specific file or path
-// *:src/third_party_code.cpp
+*:*deps/*

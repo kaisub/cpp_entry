@@ -4,12 +4,6 @@
 
 constexpr const char* dummy_func_message = "hello from func\n";
 
-TEST(DummyTest, callDummyExamplesDoesNotCrash) {
-    // Verify function can be called without crashing
-    callDummyExamples();
-    SUCCEED();
-}
-
 TEST(DummyTest, DummyFuncPrintsCorrectMessage) {
     // 1. Redirect cout to a stringstream
     std::stringstream buffer;

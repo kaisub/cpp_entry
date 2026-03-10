@@ -58,6 +58,16 @@ if(USE_SANITIZERS AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang" AND NOT CMAKE_SY
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fsanitize=address,undefined")
 endif()
 
+# --- FetchContent: Magic Enum ---
+# Store fetched dependencies in the deps/ folder
+set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/deps")
+include(FetchContent)
+FetchContent_Declare(
+    magic_enum
+    URL https://github.com/Neargye/magic_enum/archive/refs/tags/v0.9.5.zip
+)
+FetchContent_MakeAvailable(magic_enum)
+
 # Collection of source and header files
 # Use GLOB_RECURSE to find files in all subdirectories (like src/dummy)
 # Using CONFIGURE_DEPENDS forces CMake to check directory contents at build time
@@ -68,8 +78,13 @@ file(GLOB_RECURSE libs_SRC CONFIGURE_DEPENDS "inc/*.h" "inc/*.hpp")
 add_library(${PROJECT_NAME}_lib STATIC ${SRC_LIST} ${libs_SRC})
 target_include_directories(${PROJECT_NAME}_lib PUBLIC inc)
 
+# Link magic_enum PUBLICLY to the library so anything linking to this library inherits the include paths
+target_link_libraries(${PROJECT_NAME}_lib PUBLIC magic_enum::magic_enum)
+
 # Create executable
 add_executable(${PROJECT_NAME} main.cpp)
+
+# Link the library to the executable (automatically includes magic_enum via transitive dependency)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_lib)
 
 # Compiler options
@@ -88,11 +103,11 @@ endif()
 # Unit Tests
 if(BUILD_TESTING)
     enable_testing()
+    
     # Google Test setup
     set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/deps")
-    include(FetchContent)
     FetchContent_Declare(
-    googletest
+        googletest
         URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE
     )
@@ -110,7 +125,9 @@ if(BUILD_TESTING)
     # Create the test executable using all dynamically found source files
     add_executable(unit_tests ${TEST_SOURCES})
 
+    # Link tests to the main library (which includes magic_enum) and GTest
     target_link_libraries(unit_tests PRIVATE ${PROJECT_NAME}_lib GTest::gtest_main)
+    
     include(GoogleTest)
     gtest_discover_tests(unit_tests)
 endif()
@@ -126,8 +143,9 @@ if(CPPCHECK_PROGRAM)
             --inconclusive
             --inline-suppr
             --suppress=missingIncludeSystem
-            -I ${CMAKE_SOURCE_DIR}/inc    # Base include directory
-            ${CMAKE_SOURCE_DIR}/src       # Recurse through all subfolders in src
+            -I ${CMAKE_SOURCE_DIR}/inc
+            -I ${CMAKE_SOURCE_DIR}/deps/magic_enum-src/include  # Provide magic_enum to cppcheck
+            ${CMAKE_SOURCE_DIR}/src
             ${CMAKE_SOURCE_DIR}/main.cpp
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         COMMENT "Running Cppcheck analysis..."

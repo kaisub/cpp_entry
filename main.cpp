@@ -1,14 +1,18 @@
 #include <iostream>
 #include <exception>
 #include <cstdio> // Required for std::printf
+#include <vector>
+#include <string>
 
-#include "dummy/dummyFunc.h"
+#include "mainEntry.h"
+
+using std::cout;
 
 int main(int argc, const char* argv[]) // NOLINT(modernize-use-trailing-return-type)
 {
     try
     {
-        callDummyExamples();
+        callProjectFunctionality(parseArguments(std::span<const char*>(argv, argc)));
     }
     catch(const std::exception& e)
     {
