@@ -1,0 +1,27 @@
+---
+# --- Clang-Tidy Configuration File ---
+
+# Enable all standard checks and specific groups
+Checks: >
+  bugprone-*,
+  modernize-*,
+  performance-*,
+  readability-*,
+  -modernize-use-trailing-return-type,
+  -readability-magic-numbers
+
+# Turn all warnings into errors (optional - uncomment to be very strict)
+# WarningsAsErrors: '*'
+
+# Specific configuration for individual checks
+CheckOptions:
+  # Enforce naming conventions for classes and variables
+  - key:             readability-identifier-naming.ClassCase
+    value:           CamelCase
+  - key:             readability-identifier-naming.VariableCase
+    value:           lower_case
+  - key:             readability-identifier-naming.FunctionCase
+    value:           camelBack
+    
+# Do not analyze headers from these directories (e.g., external deps)
+HeaderFilterRegex: '^(inc/|src/).*'

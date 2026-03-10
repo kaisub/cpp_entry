@@ -1,0 +1,117 @@
+// Jenkinsfile - Declarative Pipeline for C++ cpp_entry Project
+
+pipeline {
+agent any
+
+options {
+    // Keep only the last 5 builds to save disk space on GCP
+    buildDiscarder(logRotator(numToKeepStr: '5'))
+    timestamps()
+}
+
+environment {
+    // Define the output directory for CMake
+    BUILD_DIR = "build_jenkins"
+}
+
+stages {
+    stage('Checkout') {
+        steps {
+            // Fetch the source code from GitHub
+            checkout scm
+        }
+    }
+
+    stage('Configure CMake') {
+        steps {
+            sh 'echo "Configuring the project with CMake..."'
+            // Generate compile_commands.json required by Clang-Tidy and enable Sanitizers
+            sh 'cmake -S . -B ${BUILD_DIR} -DBUILD_TESTING=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DUSE_SANITIZERS=ON'
+        }
+    }
+
+    stage('Static Analysis') {
+        steps {
+            // Ensure the suppressions file from .jenkins folder is used
+            sh 'echo "Running Cppcheck..."'
+            sh 'cppcheck --project=${BUILD_DIR}/compile_commands.json -i deps -i tests --enable=all --inconclusive --suppressions-list=.jenkins/cppcheck_suppressions.txt --xml --xml-version=2 2> ${BUILD_DIR}/cppcheck_report.xml'
+
+            sh 'echo "Running Clang-Tidy..."'
+            sh 'cmake --build ${BUILD_DIR} --target run_tidy > ${BUILD_DIR}/clang_tidy_report.txt 2>&1'
+        }
+    }
+
+    stage('Build C++') {
+        steps {
+            sh 'echo "Building the project..."'
+            sh 'cmake --build ${BUILD_DIR} -j $(nproc)'
+        }
+    }
+
+stage('Cross-Compile Windows') {
+        steps {
+            // Execute the cross-compilation script to generate .exe
+            sh 'echo "Cross-compiling for Windows..."'
+            // Grant execution permissions to the newly created script
+            sh 'chmod +x ./scripts_builds/build_cross_win.sh'
+            sh './scripts_builds/build_cross_win.sh'
+        }
+    }
+
+    stage('Run Unit Tests') {
+        steps {
+            // Run CTest and output results in modern JUnit XML format
+            sh 'echo "Running tests and generating XML report..."'
+            sh 'cd ${BUILD_DIR} && ctest --output-junit test_results.xml'
+        }
+    }
+}
+
+post {
+    always {
+        // 1. Parse the XML file to generate a test graph in Jenkins UI
+        junit testResults: "${BUILD_DIR}/test_results.xml", allowEmptyResults: true
+
+        // 2. Parse and publish static analysis warnings using Warnings NG plugin
+        // qualityGates defines the conditions under which the build should fail
+        recordIssues(
+            tools: [
+                cppCheck(pattern: "${BUILD_DIR}/cppcheck_report.xml"), 
+                clangTidy(pattern: "${BUILD_DIR}/clang_tidy_report.txt")
+            ],
+            qualityGates: [
+                [threshold: 1, type: 'TOTAL', unstable: false]
+            ]
+        )
+
+        // 3. Clean up the build artifacts to free up disk space
+        sh 'echo "Cleaning up build directory..."'
+        sh 'rm -rf ${BUILD_DIR}'
+    }
+    success {
+        // Securely extract the GitHub PAT and send a SUCCESS status via REST API
+        withCredentials([usernamePassword(credentialsId: 'github-token', passwordVariable: 'GIT_TOKEN', usernameVariable: 'GIT_USER')]) {
+            sh '''
+                curl -X POST -H "Accept: application/vnd.github.v3+json" \
+                -H "Authorization: token ${GIT_TOKEN}" \
+                https://api.github.com/repos/kaisub/cpp_entry/statuses/${GIT_COMMIT} \
+                -d '{"state": "success", "context": "Jenkins CI", "description": "Build & Tests Passed!", "target_url": "'${BUILD_URL}'"}'
+            '''
+        }
+        sh 'echo "Pipeline completed successfully!"'
+    }
+    failure {
+        // Securely extract the GitHub PAT and send a FAILURE status via REST API
+        withCredentials([usernamePassword(credentialsId: 'github-token', passwordVariable: 'GIT_TOKEN', usernameVariable: 'GIT_USER')]) {
+            sh '''
+                curl -X POST -H "Accept: application/vnd.github.v3+json" \
+                -H "Authorization: token ${GIT_TOKEN}" \
+                https://api.github.com/repos/kaisub/cpp_entry/statuses/${GIT_COMMIT} \
+                -d '{"state": "failure", "context": "Jenkins CI", "description": "Build or Tests Failed!", "target_url": "'${BUILD_URL}'"}'
+            '''
+        }
+        sh 'echo "Pipeline failed. Check the logs."'
+    }
+}
+
+}

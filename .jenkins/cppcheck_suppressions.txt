@@ -1,0 +1,16 @@
+// Suppress warnings about missing system headers (e.g., <iostream>, <vector>)
+missingIncludeSystem
+
+// Suppress informational message that breaks Jenkins Quality Gates
+checkersReport
+
+// --- Future examples below ---
+
+// Suppress a specific error globally across the entire project
+// uninitMemberVar
+
+// Suppress a specific error ONLY in a specific file
+// unusedFunction:src/legacy_module.cpp
+
+// Suppress all errors inside a specific file or path
+// *:src/third_party_code.cpp

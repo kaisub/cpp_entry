@@ -1,0 +1,52 @@
+name: C++ CI Pipeline
+
+# Trigger the workflow on push or pull request events for the main branch
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      # Install required tools for building, testing, and static analysis including ninja-build and mingw-w64 for cross-compilation
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake g++ cppcheck clang-tidy gcovr ninja-build mingw-w64
+
+    - name: Make scripts executable
+      run: chmod +x scripts_builds/*.sh
+
+    - name: 1. Build and Run Unit Tests
+      # Highest priority: verify logic first.
+      # Added -DUSE_SANITIZERS=ON to catch memory errors during UT execution.
+      run: |
+        cmake -S . -B build -G Ninja -DBUILD_TESTING=ON -DUSE_SANITIZERS=ON
+        cmake --build build
+        ./build/bin/unit_tests
+
+    - name: 2. Run Static Analysis (Code Check)
+      # Run analysis using the shared code_check.sh script
+      run: ./scripts_builds/code_check.sh
+
+    - name: 3. Generate Code Coverage Report
+      # Create HTML report based on the UTs executed in step 1
+      run: ./scripts_builds/generate_coverage_ubuntu.sh
+
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-report
+        path: coverage/
+
+    - name: 4. Cross-Compile Windows Binary (.exe)
+      # Build the Windows executable using the MinGW toolchain
+      run: ./scripts_builds/build_cross_win.sh

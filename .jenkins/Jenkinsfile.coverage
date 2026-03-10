@@ -1,0 +1,47 @@
+// ci/Jenkinsfile.coverage - Pipeline for Code Coverage
+
+pipeline {
+    agent any
+
+    environment {
+        BUILD_DIR = "build_coverage"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build with Coverage Flags') {
+            steps {
+                // Configure CMake to inject coverage flags into GCC
+                sh 'cmake -S . -B ${BUILD_DIR} -DBUILD_TESTING=ON -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_EXE_LINKER_FLAGS="--coverage"'
+                sh 'cmake --build ${BUILD_DIR} -j $(nproc)'
+            }
+        }
+
+        stage('Run Tests & Generate Report') {
+            steps {
+                // Running tests generates .gcda profiling files
+                sh 'cd ${BUILD_DIR} && ctest'
+                
+                // Use gcovr to generate an XML report in Cobertura format
+                // Generate XML report filtering ONLY the source and include directories
+                sh 'gcovr --xml-pretty --filter "src/.*" --filter "inc/.*" -o ${BUILD_DIR}/coverage.xml --root .'
+            }
+        }
+    }
+
+    post {
+        always {
+            // Publish coverage report using the modern Coverage plugin
+            recordCoverage(tools: [[parser: 'COBERTURA', pattern: "${BUILD_DIR}/coverage.xml"]])
+            
+            // Clean up workspace
+            sh 'echo "Cleaning up build directory..."'
+            sh 'rm -rf ${BUILD_DIR}'
+        }
+    }
+}
