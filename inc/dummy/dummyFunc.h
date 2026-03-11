@@ -3,7 +3,7 @@
 // --------------------------------------
 // main functions for dummy examples
 // --------------------------------------
-void callDummyExamples();
+void dummyEntry();
 
 // simple function to print a message
 void dummyFunc(const char *message);

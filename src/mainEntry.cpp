@@ -3,7 +3,6 @@
 #include <string>
 
 #include "mainEntry.h"
-#include "dummy/dummyFunc.h"
 
 using std::cout;
 
@@ -20,19 +19,17 @@ std::vector<Functionality> parseArguments(std::span<const char*> args)
     for (std::size_t i = 1; i < args.size(); ++i) {
         const int value = std::stoi(args[i]);
         // Validate that the parsed integer corresponds to a known Functionality
-        switch (static_cast<Functionality>(value)) {
-            case Functionality::DummyExamples:
-                arguments.push_back(static_cast<Functionality>(value));
-                break;
-
-            default:
-                throw std::invalid_argument("Invalid Functionality value provided: " + std::string(args[i]));
+        auto enum_value = magic_enum::enum_cast<Functionality>(value);
+        if (enum_value.has_value()) {
+            arguments.push_back(enum_value.value());
+        } else {
+            throw std::invalid_argument("Invalid Functionality value provided: " + std::string(args[i]));
         }
     }
     return arguments;
 }
 
-void callProjectFunctionality(std::span<const Functionality> args)
+void callProjectFunctionality(std::span<const Functionality> args, IFunctionalityDispatcher& dispatcher)
 {
     for (const auto &arg : args)
     {
@@ -40,12 +37,12 @@ void callProjectFunctionality(std::span<const Functionality> args)
         switch (arg)
         {
         case Functionality::DummyExamples:
-            callDummyExamples();
+            dispatcher.onDummyEntry();
             break;
-
-        default:
+            
+        case Functionality::Inheritance:
+            dispatcher.onRulesEntry(arg);
             break;
         }
     }
-    
 }

@@ -1,4 +1,4 @@
-#include "dummy/dummy_data_processor.h"
+#include "dummy/dummyDataProcessor.h"
 
 void DummyDataProcessor::add_value(int val)
 {

@@ -131,7 +131,7 @@ if(BUILD_TESTING)
     add_executable(unit_tests ${TEST_SOURCES})
 
     # Link tests to the main library (which includes magic_enum) and GTest
-    target_link_libraries(unit_tests PRIVATE ${PROJECT_NAME}_lib GTest::gtest_main)
+    target_link_libraries(unit_tests PRIVATE ${PROJECT_NAME}_lib GTest::gtest_main GTest::gmock_main)
     
     include(GoogleTest)
     gtest_discover_tests(unit_tests)

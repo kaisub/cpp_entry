@@ -1,11 +1,12 @@
 #include <iostream>
 
+#include "dummy/dummyEntry.h"
 #include "dummy/dummyFunc.h"
-#include "dummy/dummy_data_processor.h"
+#include "dummy/dummyDataProcessor.h"
 
 constexpr const char *dummy_func_message = "hello from func\n";
 
-void callDummyExamples()
+void dummyEntry()
 {
     dummyFunc(dummy_func_message);
 

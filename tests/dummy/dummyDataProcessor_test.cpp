@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
-#include <vector>
 
-#include "dummy/dummy_data_processor.h"
+#include "dummy/dummyDataProcessor.h"
 
 // -----------------------------------------------------------------------------
 // TEST FIXTURE CLASS Must inherit from ::testing::Test.
