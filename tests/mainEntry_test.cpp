@@ -11,8 +11,7 @@
 #include "mainEntry.h"
 
 // Test: No args (argc <= 1) should return all functionalities
-TEST(ParseArgumentsTest, NoArgumentsReturnsAll)
-{
+TEST(ParseArgumentsTest, NoArgumentsReturnsAll) {
     const char* argv[] = { "app_name" };
     int argc = 1;
 
@@ -40,8 +39,7 @@ TEST(ParseArgumentsTest, NonIntegerThrows) {
 }
 
 // Test: Valid argument (0) should return Functionality::DummyExamples
-TEST(ParseArgumentsTest, ValidArgumentReturnsFunctionality)
-{
+TEST(ParseArgumentsTest, ValidArgumentReturnsFunctionality) {
     const auto arg = std::to_string(static_cast<int>(Functionality::DummyExamples));
     const char* argv[] = { "app_name", arg.c_str() };
     int argc = 2;
@@ -53,8 +51,7 @@ TEST(ParseArgumentsTest, ValidArgumentReturnsFunctionality)
 }
 
 // Test: All valid arguments explicitly provided should return all Functionalities
-TEST(ParseArgumentsTest, AllExplicitArgumentsReturnAll)
-{
+TEST(ParseArgumentsTest, AllExplicitArgumentsReturnAll) {
     // Retrieve all enum values automatically (1, 2, 3, ...)
     const auto all_values = magic_enum::enum_values<Functionality>();
 
@@ -112,23 +109,20 @@ void verifyDispatcherCall(Functionality func, SetupExpectationFunc setupExpectat
 
 // Following tests corresponds to the functionalities defined in Functionality enum
 // and their respective dispatcher methods in IFunctionalityDispatcher interface.
-TEST(CallProjectFunctionalityTest, CallsDummyExamples)
-{
+TEST(CallProjectFunctionalityTest, CallsDummyExamples) {
     verifyDispatcherCall(Functionality::DummyExamples, [](MockFunctionalityDispatcher& mock) {
         EXPECT_CALL(mock, onDummyEntry()).Times(1);
     });
 }
 
-TEST(CallProjectFunctionalityTest, CallsInheritance)
-{
+TEST(CallProjectFunctionalityTest, CallsInheritance) {
     verifyDispatcherCall(Functionality::Inheritance, [](MockFunctionalityDispatcher& mock) {
         EXPECT_CALL(mock, onRulesEntry(Functionality::Inheritance)).Times(1);
     });
 }
 
 // Test: Unknown enum value (i.e. from casting) will not cause any dispatcher calls
-TEST(CallProjectFunctionalityTest, IgnoresUnknownFunctionality)
-{
+TEST(CallProjectFunctionalityTest, IgnoresUnknownFunctionality) {
     MockFunctionalityDispatcher mock;
     
     // Fake enum by casting an out-of-range integer to Functionality

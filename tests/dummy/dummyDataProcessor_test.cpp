@@ -6,8 +6,7 @@
 // TEST FIXTURE CLASS Must inherit from ::testing::Test.
 // The name of this class will be the first argument in the TEST_F macro.
 
-class DummyDataProcessorTest : public ::testing::Test
-{
+class DummyDataProcessorTest : public ::testing::Test {
 protected:
     DummyDataProcessor processor;
 

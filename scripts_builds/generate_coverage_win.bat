@@ -20,8 +20,8 @@ if not exist %COVERAGE_EXE% (
     set COVERAGE_EXE=OpenCppCoverage
 )
 
-:: Note: OpenCppCoverage tracks line execution, not branch execution like gcovr.
-:: The "throw branches" issue is specific to GCC/Clang.
+:: Note: OpenCppCoverage tracks execution via PDBs, not via static branch logic.
+:: MSVC does not suffer from the same "ghost lines" issue with destructors as GCC[cite: 18].
 %COVERAGE_EXE% ^
     --sources "%cd%\src" ^
     --sources "%cd%\inc" ^

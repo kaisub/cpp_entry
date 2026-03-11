@@ -6,14 +6,17 @@
 
 constexpr const char *dummy_func_message = "hello from func\n";
 
+using std::cout;
+
 void dummyEntry()
 {
+    cout << "\nThis is the dummy entry point.\n\n";
     dummyFunc(dummy_func_message);
 
     DummyDataProcessor processor;
     processor.add_value(10);
-    std::cout << "Size: " << processor.get_size() << '\n';
+    cout << "Size: " << processor.get_size() << '\n';
 
     processor.clear_data();
-    std::cout << "Size after clearing: " << processor.get_size() << '\n';
+    cout << "Size after clearing: " << processor.get_size() << '\n';
 }

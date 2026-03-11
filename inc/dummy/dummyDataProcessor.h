@@ -3,8 +3,7 @@
 #include <vector>
 
 // DUMMY CLASS FOR TESTING PURPOSES
-class DummyDataProcessor
-{
+class DummyDataProcessor {
 public:
     void add_value(int val);
     
