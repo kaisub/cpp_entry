@@ -13,34 +13,26 @@ void demonstrateClassInheritance()
 }
 
 Base::Base(int val) : val(val) {}
-// LCOV_EXCL_START
-Base::~Base()
-{
-    std::puts("~Base::destructor\n");
-};
-// LCOV_EXCL_STOP
+
+// Kept on a single line so the CI coverage regex (.*~.*) excludes the entire destructor (including braces) at once.
+Base::~Base() { std::puts("~Base::destructor\n"); };
+
 void Base::print() const
 {
     cout << "Base::print() a = " << val << '\n';
 }
-// LCOV_EXCL_START
-AbstractInterfaceOne::~AbstractInterfaceOne()
-{
-    std::puts("~AbstractInterfaceOne::destructor\n");
-};
 
-AbstractInterfaceTwo::~AbstractInterfaceTwo()
-{
-    std::puts("~AbstractInterfaceTwo::destructor\n");
-};
-// LCOV_EXCL_STOP
+// Kept on a single line so the CI coverage regex (.*~.*) excludes the entire destructor (including braces) at once.
+AbstractInterfaceOne::~AbstractInterfaceOne() { std::puts("~AbstractInterfaceOne::destructor\n"); };
+
+// Kept on a single line so the CI coverage regex (.*~.*) excludes the entire destructor (including braces) at once.
+AbstractInterfaceTwo::~AbstractInterfaceTwo() { std::puts("~AbstractInterfaceTwo::destructor\n"); };
+
 AA::AA(int valX, int valY, int valA) : Base(valA), valX(valX), valY(valY) {}
-// LCOV_EXCL_START
-AA::~AA()
-{
-    std::puts("~AA::destructor\n");
-}
-// LCOV_EXCL_STOP
+
+// Kept on a single line so the CI coverage regex (.*~.*) excludes the entire destructor (including braces) at once.
+AA::~AA() { std::puts("~AA::destructor\n"); }
+
 void AA::interfacePrintOne() const
 {
     cout << "AA::interfacePrintOne() called" << '\n';
