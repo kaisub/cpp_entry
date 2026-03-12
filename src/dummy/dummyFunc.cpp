@@ -4,7 +4,4 @@
 
 using std::cout;
 
-void dummyFunc(const char *message)
-{
-    cout << message;
-}
+void dummyFunc(const char *message) { cout << message; }

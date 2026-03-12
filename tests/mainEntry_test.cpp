@@ -1,12 +1,13 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <stdexcept>
-#include <sstream>
 #include <iostream>
+#include <functional>
+#include <magic_enum.hpp>
+#include <span>
+#include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
-#include <span>
-#include <magic_enum.hpp>
 
 #include "mainEntry.h"
 
@@ -100,32 +101,76 @@ template <typename SetupExpectationFunc>
 void verifyDispatcherCall(Functionality func, SetupExpectationFunc setupExpectation)
 {
     MockFunctionalityDispatcher mock;
-    std::vector<Functionality> args = { func };
-
     setupExpectation(mock);
-
-    callProjectFunctionality(args, mock);
+    callProjectFunctionality(std::vector<Functionality>{ func }, mock);
 }
 
-// Following tests corresponds to the functionalities defined in Functionality enum
-// and their respective dispatcher methods in IFunctionalityDispatcher interface.
-TEST(CallProjectFunctionalityTest, CallsDummyExamples) {
-    verifyDispatcherCall(Functionality::DummyExamples, [](MockFunctionalityDispatcher& mock) {
+// --- Types & Test Fixture ---
+// Structure holding the enum value and its expected mock behavior
+struct DispatcherTestParam {
+    Functionality func;
+    std::function<void(MockFunctionalityDispatcher&)> setupMock;
+};
+
+// Parameterized test fixture
+class CallProjectFunctionalityTest : public testing::TestWithParam<DispatcherTestParam> {};
+
+// --- The Core Test ---
+TEST_P(CallProjectFunctionalityTest, RoutesToCorrectMethod) {
+    auto param = GetParam();
+    verifyDispatcherCall(param.func, param.setupMock);
+}
+
+// --- Mock Setup Helpers ---
+auto expectOnDummyEntry = []() {
+    return [](MockFunctionalityDispatcher& mock) {
         EXPECT_CALL(mock, onDummyEntry()).Times(1);
-    });
+    };
+};
+
+auto expectRulesEntry = [](Functionality f)
+{
+    return [f](MockFunctionalityDispatcher &mock)
+    {
+        EXPECT_CALL(mock, onRulesEntry(f)).Times(1);
+    };
+};
+
+// --- Test Data Generation ---
+// Automatically generates test parameters for all enum values using magic_enum
+std::vector<DispatcherTestParam> generateDispatcherTestParams()
+{
+    std::vector<DispatcherTestParam> params;
+
+    // Iterate over all values defined in the Functionality enum
+    for (auto func : magic_enum::enum_values<Functionality>())
+    {
+        if (func == Functionality::DummyExamples)
+        {
+            // Specific expectation for the Dummy Entry
+            params.push_back({func, expectOnDummyEntry()});
+        }
+        else
+        {
+            // Default expectation for all other standard rules
+            params.push_back({func, expectRulesEntry(func)});
+        }
+    }
+    return params;
 }
 
-TEST(CallProjectFunctionalityTest, CallsInheritance) {
-    verifyDispatcherCall(Functionality::ClassInheritance, [](MockFunctionalityDispatcher& mock) {
-        EXPECT_CALL(mock, onRulesEntry(Functionality::ClassInheritance)).Times(1);
-    });
-}
+// Custom name formatter to display the enum name in the console (e.g., ".../SmartPointers")
+auto name_formatter = [](const auto& info) {
+    return std::string(magic_enum::enum_name(info.param.func));
+};
 
-TEST(CallProjectFunctionalityTest, SmartPointers) {
-    verifyDispatcherCall(Functionality::SmartPointers, [](MockFunctionalityDispatcher& mock) {
-        EXPECT_CALL(mock, onRulesEntry(Functionality::SmartPointers)).Times(1);
-    });
-}
+// --- Test Suite Instantiation ---
+INSTANTIATE_TEST_SUITE_P(
+    AllRoutes,
+    CallProjectFunctionalityTest,
+    testing::ValuesIn(generateDispatcherTestParams()),
+    name_formatter
+);
 
 // Test: Unknown enum value (i.e. from casting) will not cause any dispatcher calls
 TEST(CallProjectFunctionalityTest, IgnoresUnknownFunctionality) {

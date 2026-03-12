@@ -1,7 +1,8 @@
 #pragma once
 
 enum class Functionality {
-    DummyExamples = 0,
-    ClassInheritance,
-    SmartPointers
+  DummyExamples = 0,
+  ClassInheritance,
+  ClassMoveable,
+  SmartPointers
 };

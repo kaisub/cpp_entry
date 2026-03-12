@@ -34,7 +34,9 @@ echo "[INFO] Generating HTML report with gcovr..."
     --html --html-details \
     -o coverage/index.html
 
-echo "[SUCCESS] Coverage report generated in: coverage/index.html"
+WIN_PATH=$(cygpath -w -a coverage/index.html)
+
+echo "[SUCCESS] Coverage report generated in: $WIN_PATH"
 
 # Convert POSIX path to Windows path for explorer
-explorer.exe $(cygpath -w coverage/index.html)
+explorer.exe $WIN_PATH
