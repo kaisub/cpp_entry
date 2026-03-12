@@ -9,7 +9,7 @@
 
 using std::cout;
 
-constexpr std::optional<Functionality> expected_func = std::nullopt; // Set to a specific Functionality value for local testing, or leave as nullopt to parse from command line arguments.
+constexpr std::optional<Functionality> expected_func = Functionality::SmartPointers; // Set to a specific Functionality value for local testing, or leave as nullopt to parse from command line arguments.
 
 int main(int argc, const char* argv[]) // NOLINT(modernize-use-trailing-return-type)
 {

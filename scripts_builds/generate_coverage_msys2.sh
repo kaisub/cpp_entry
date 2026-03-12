@@ -20,6 +20,7 @@ echo "[INFO] Generating HTML report with gcovr..."
 # Added --exclude-lines-by-pattern to ignore C++ destructors ('~') which cause
 # "ghost lines" in GCC coverage metrics due to D0/D1/D2 compiler generation.
 /ucrt64/bin/python.exe -m gcovr \
+    --decisions \
     -r . \
     --gcov-executable /ucrt64/bin/gcov.exe \
     --filter src/ \
@@ -28,6 +29,8 @@ echo "[INFO] Generating HTML report with gcovr..."
     --exclude-throw-branches \
     --exclude-unreachable-branches \
     --exclude-lines-by-pattern '.*~.*' \
+    --exclude-branches-by-pattern '.*(make_unique|make_shared|new |std::format).*' \
+    --exclude-noncode-lines \
     --html --html-details \
     -o coverage/index.html
 

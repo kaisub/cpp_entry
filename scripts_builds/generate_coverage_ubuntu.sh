@@ -12,16 +12,18 @@ echo "[INFO] Requires build_run_uts.sh to be run first to generate .gcda files."
 echo "[INFO] Generating HTML report with gcovr..."
 mkdir -p coverage
 
-# Generate report based on existing .gcda files in the build directory.
-# Added --exclude-lines-by-pattern to safely ignore destructor signatures,
-# removing the missing compiler-generated lines from the final report.
-gcovr -r . \
+# Ulepszone wywołanie gcovr (zsynchronizowane z MSYS2)
+gcovr \
+    --decisions \
+    -r . \
     --filter src/ \
     --filter inc/ \
     --object-directory build/ \
     --exclude-throw-branches \
     --exclude-unreachable-branches \
     --exclude-lines-by-pattern '.*~.*' \
+    --exclude-branches-by-pattern '.*(make_unique|make_shared|new |std::format).*' \
+    --exclude-noncode-lines \
     --html --html-details \
     -o coverage/index.html
 

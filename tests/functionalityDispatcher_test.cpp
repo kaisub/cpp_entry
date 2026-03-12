@@ -20,5 +20,6 @@ TEST_F(FunctionalityDispatcherTest, DummyEntryExecutesWithoutThrowing) {
 }
 
 TEST_F(FunctionalityDispatcherTest, RulesEntryExecutesWithoutThrowing) {
-    EXPECT_NO_THROW({ dispatcher.onRulesEntry(Functionality::Inheritance); });
+    EXPECT_NO_THROW({ dispatcher.onRulesEntry(Functionality::ClassInheritance); });
+    EXPECT_NO_THROW({ dispatcher.onRulesEntry(Functionality::SmartPointers); });
 }

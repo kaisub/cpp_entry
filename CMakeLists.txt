@@ -110,7 +110,6 @@ if(BUILD_TESTING)
     enable_testing()
     
     # Google Test setup
-#    set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/deps")
     FetchContent_Declare(
         googletest
         URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
@@ -120,7 +119,7 @@ if(BUILD_TESTING)
     FetchContent_MakeAvailable(googletest)
 
     # Recursively find all C++ source files in the tests directory and its subdirectories
-    file(GLOB_RECURSE TEST_SOURCES "tests/*.cpp")
+    file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS "tests/*.cpp")
 
     # Check if any test files were found to avoid CMake configuration errors
     if(NOT TEST_SOURCES)
@@ -129,6 +128,8 @@ if(BUILD_TESTING)
 
     # Create the test executable using all dynamically found source files
     add_executable(unit_tests ${TEST_SOURCES})
+    # Add common folder to include paths for unit_tests target
+    target_include_directories(unit_tests PRIVATE tests)
 
     # Link tests to the main library (which includes magic_enum) and GTest
     target_link_libraries(unit_tests PRIVATE ${PROJECT_NAME}_lib GTest::gtest_main GTest::gmock_main)

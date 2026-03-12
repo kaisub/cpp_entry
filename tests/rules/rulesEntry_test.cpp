@@ -22,8 +22,8 @@ protected:
     }
 };
 
-TEST_F(RulesEntryTest, InheritancePrintsNotImplemented) {
-    EXPECT_NO_THROW({ rulesEntry(Functionality::Inheritance); });
+TEST_F(RulesEntryTest, ClassInheritanceNotThrow) {
+    EXPECT_NO_THROW({ rulesEntry(Functionality::ClassInheritance); });
 }
 
 TEST_F(RulesEntryTest, OtherFunctionalityPrintsNothing) {

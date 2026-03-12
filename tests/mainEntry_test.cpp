@@ -116,8 +116,14 @@ TEST(CallProjectFunctionalityTest, CallsDummyExamples) {
 }
 
 TEST(CallProjectFunctionalityTest, CallsInheritance) {
-    verifyDispatcherCall(Functionality::Inheritance, [](MockFunctionalityDispatcher& mock) {
-        EXPECT_CALL(mock, onRulesEntry(Functionality::Inheritance)).Times(1);
+    verifyDispatcherCall(Functionality::ClassInheritance, [](MockFunctionalityDispatcher& mock) {
+        EXPECT_CALL(mock, onRulesEntry(Functionality::ClassInheritance)).Times(1);
+    });
+}
+
+TEST(CallProjectFunctionalityTest, SmartPointers) {
+    verifyDispatcherCall(Functionality::SmartPointers, [](MockFunctionalityDispatcher& mock) {
+        EXPECT_CALL(mock, onRulesEntry(Functionality::SmartPointers)).Times(1);
     });
 }
 

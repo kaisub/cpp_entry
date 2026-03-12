@@ -1,6 +1,7 @@
 #include <iostream>
 #include <magic_enum.hpp>
 #include <string>
+#include <span>
 
 #include "mainEntry.h"
 
@@ -40,7 +41,8 @@ void callProjectFunctionality(std::span<const Functionality> args, IFunctionalit
             dispatcher.onDummyEntry();
             break;
             
-        case Functionality::Inheritance:
+        case Functionality::ClassInheritance:
+        case Functionality::SmartPointers:
             dispatcher.onRulesEntry(arg);
             break;
         }
