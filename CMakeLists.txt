@@ -64,12 +64,13 @@ if(USE_SANITIZERS AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang" AND NOT CMAKE_SY
 endif()
 
 # --- FetchContent: Magic Enum ---
-# Store fetched dependencies in the deps/ folder
-#set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/deps")
+# Store fetched dependencies in the _deps/ folder
+#set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/_deps")
 include(FetchContent)
 FetchContent_Declare(
     magic_enum
     URL https://github.com/Neargye/magic_enum/archive/refs/tags/v0.9.5.zip
+    EXCLUDE_FROM_ALL # <--- Add this to keep compile_commands.json clean
 )
 FetchContent_MakeAvailable(magic_enum)
 
@@ -114,9 +115,15 @@ if(BUILD_TESTING)
         googletest
         URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+        EXCLUDE_FROM_ALL # <--- REQUIRED: Drops target from default build & JSON DB
     )
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     FetchContent_MakeAvailable(googletest)
+
+    # --- CRITICAL FIX: Forcefully drop GTest from compile_commands.json ---
+    set_target_properties(gtest gtest_main gmock gmock_main 
+        PROPERTIES EXPORT_COMPILE_COMMANDS OFF
+    )
 
     # Recursively find all C++ source files in the tests directory and its subdirectories
     file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS "tests/*.cpp")

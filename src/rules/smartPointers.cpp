@@ -1,4 +1,3 @@
-#include <cstdio> // Required for std::puts
 #include <format>
 #include <iostream>
 #include <memory>

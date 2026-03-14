@@ -31,11 +31,9 @@ Movable::Movable(const Movable& other)
     }
 }
 
-Movable::Movable(Movable&& other) noexcept
+Movable::Movable(Movable&& other) noexcept : data(other.data), name(std::move(other.name))
 {
     std::printf("Movable move construct: %d\n", other.getValue());
-    name = other.name;
-    data = other.data;
     other.data = nullptr;
 }
 

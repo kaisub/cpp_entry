@@ -13,7 +13,7 @@ echo ""
 
 # --- Step 1: Build and Tests ---
 echo "[INFO] Step 1: Building and running unit tests (--clean)"
-# Zakładam, że Twój skrypt .sh obsługuje flagę --clean
+# Assuming the script handles --clean
 ./scripts_builds/build_run_uts.sh --clean
 
 echo ""

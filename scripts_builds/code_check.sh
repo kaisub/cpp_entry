@@ -18,8 +18,14 @@ cmake -S . -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 echo "[INFO] Running Cppcheck..."
 # Run Cppcheck directly to mirror Jenkins CI behavior exactly
-# Ignores deps/tests, uses the suppressions list from .jenkins, and fails on error
-cppcheck --project=build/compile_commands.json -i deps -i tests --enable=all --inconclusive --suppressions-list=.jenkins/cppcheck_suppressions.txt --error-exitcode=1
+# Ignores tests, uses the suppressions list from .jenkins, and fails on error
+cppcheck --project=build/compile_commands.json \
+    -i tests \
+    -i build \
+    --enable=all \
+    --inconclusive \
+    --suppressions-list=.jenkins/cppcheck_suppressions.txt \
+    --error-exitcode=1
 
 echo "[INFO] Running Clang-Tidy..."
 # Run Clang-Tidy via CMake target

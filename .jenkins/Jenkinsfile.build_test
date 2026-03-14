@@ -26,7 +26,7 @@ stages {
         steps {
             sh 'echo "Configuring the project with CMake..."'
             // Generate compile_commands.json required by Clang-Tidy and enable Sanitizers
-            sh 'cmake -S . -B ${BUILD_DIR} -DBUILD_TESTING=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DUSE_SANITIZERS=ON'
+            sh 'cmake -S . -B ${BUILD_DIR} -G Ninja -DBUILD_TESTING=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DUSE_SANITIZERS=ON'
         }
     }
 
@@ -34,7 +34,7 @@ stages {
         steps {
             // Ensure the suppressions file from .jenkins folder is used
             sh 'echo "Running Cppcheck..."'
-            sh 'cppcheck --project=${BUILD_DIR}/compile_commands.json -i deps -i tests --enable=all --inconclusive --suppressions-list=.jenkins/cppcheck_suppressions.txt --xml --xml-version=2 2> ${BUILD_DIR}/cppcheck_report.xml'
+            sh 'cppcheck --project=${BUILD_DIR}/compile_commands.json -i tests -i ${BUILD_DIR} --enable=all --inconclusive --suppressions-list=.jenkins/cppcheck_suppressions.txt --xml --xml-version=2 2> ${BUILD_DIR}/cppcheck_report.xml'
 
             sh 'echo "Running Clang-Tidy..."'
             sh 'cmake --build ${BUILD_DIR} --target run_tidy > ${BUILD_DIR}/clang_tidy_report.txt 2>&1'
@@ -44,7 +44,8 @@ stages {
     stage('Build C++') {
         steps {
             sh 'echo "Building the project..."'
-            sh 'cmake --build ${BUILD_DIR} -j $(nproc)'
+            // FIXED: Hardcapped to -j2 to prevent OOM on micro-instances
+            sh 'cmake --build ${BUILD_DIR} -j2'
         }
     }
 
@@ -52,7 +53,6 @@ stage('Cross-Compile Windows') {
         steps {
             // Execute the cross-compilation script to generate .exe
             sh 'echo "Cross-compiling for Windows..."'
-            // Grant execution permissions to the newly created script
             sh 'chmod +x ./scripts_builds/build_cross_win.sh'
             sh './scripts_builds/build_cross_win.sh'
         }
@@ -62,7 +62,8 @@ stage('Cross-Compile Windows') {
         steps {
             // Run CTest and output results in modern JUnit XML format
             sh 'echo "Running tests and generating XML report..."'
-            sh 'cd ${BUILD_DIR} && ctest --output-junit test_results.xml'
+            //sh 'cd ${BUILD_DIR} && ctest --output-junit test_results.xml'
+            sh 'ctest --test-dir ${BUILD_DIR} --output-junit test_results.xml'
         }
     }
 }

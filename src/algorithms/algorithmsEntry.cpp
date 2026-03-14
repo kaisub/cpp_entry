@@ -1,5 +1,5 @@
 #include "functionality.h"
 
-void algorithmsEntry(Functionality)
+void algorithmsEntry(Functionality) //NOLINT(readability-named-parameter)
 {
 }

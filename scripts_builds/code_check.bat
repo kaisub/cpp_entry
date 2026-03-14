@@ -52,8 +52,8 @@ if not exist "build\compile_commands.json" (
     exit /b 1
 )
 
-:: Run Cppcheck, ignore deps/tests, use .jenkins suppressions, and fail on error (--error-exitcode=1)
-cppcheck --project=build/compile_commands.json -i deps -i tests --enable=all --inconclusive --suppressions-list=.jenkins/cppcheck_suppressions.txt --error-exitcode=1
+:: Run Cppcheck, ignore tests, use .jenkins suppressions, and fail on error (--error-exitcode=1)
+cppcheck --project=build/compile_commands.json -i tests -i build --enable=all --inconclusive --suppressions-list=.jenkins/cppcheck_suppressions.txt --error-exitcode=1
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Cppcheck found issues! Build failed.
     exit /b %ERRORLEVEL%
