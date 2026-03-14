@@ -13,7 +13,8 @@ Simple::Simple(const char *name) : name(name) {
 
 Simple::~Simple() { std::printf("Simple %s dest %d\n", name.c_str(), id); }
 
-void pointersCreation() {
+void pointersCreation()
+{
   int val = 55;
 
   auto const *pi1 = &val;
@@ -34,7 +35,8 @@ void pointersCreation() {
   auto sptr3 = std::make_shared<Simple>("shared");
 }
 
-void demonstrateSmartPointers() {
+void demonstrateSmartPointers()
+{
   cout << "*** printPointers ***\n";
 
   pointersCreation();

@@ -17,10 +17,9 @@ Movable::Movable(std::string name) : name(std::move(name))
     cout << std::format("Movable construct with name: {}\n", this->name);
 }
 
-Movable::operator const std::string&() const
+Movable::~Movable()
 {
-    cout << std::format("->Movable operator const std::string&: {}<- ", name);
-    return name;
+    delete data;
 }
 
 Movable::Movable(const Movable& other)
@@ -35,13 +34,15 @@ Movable::Movable(const Movable& other)
 Movable::Movable(Movable&& other) noexcept
 {
     std::printf("Movable move construct: %d\n", other.getValue());
+    name = other.name;
     data = other.data;
     other.data = nullptr;
 }
 
-Movable::~Movable()
+Movable::operator const std::string&() const
 {
-    delete data;
+    cout << std::format("->Movable operator const std::string&: {}<- ", name);
+    return name;
 }
 
 int Movable::getValue() const

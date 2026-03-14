@@ -11,6 +11,8 @@ public:
   explicit Movable(int value = 0);
   explicit Movable(std::string name);
 
+  ~Movable();
+
   Movable(const Movable &other);
   Movable(Movable &&other) noexcept;
 
@@ -20,8 +22,6 @@ public:
   Movable &operator=(const Movable &other) = delete;
   // NO move operator
   Movable &operator=(Movable &&other) = delete;
-
-  ~Movable();
 
   int getValue() const;
 };

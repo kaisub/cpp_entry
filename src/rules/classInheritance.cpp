@@ -13,24 +13,20 @@ void demonstrateClassInheritance() {
 
 Base::Base(int val) : val(val) {}
 
-// Kept on a single line so the CI coverage regex (.*~.*) excludes the entire
-// destructor (including braces) at once.
+// Kept on a single line so the CI coverage regex (.*~.*) excludes the entire destructor (including braces) at once.
 Base::~Base() { std::puts("~Base::destructor\n"); };
 
 void Base::print() const { cout << "Base::print() a = " << val << '\n'; }
 
-// Kept on a single line so the CI coverage regex (.*~.*) excludes the entire
-// destructor (including braces) at once.
+// Kept on a single line so the CI coverage regex (.*~.*) excludes the entire destructor (including braces) at once.
 AbstractInterfaceOne::~AbstractInterfaceOne() { std::puts("~AbstractInterfaceOne::destructor\n"); };
 
-// Kept on a single line so the CI coverage regex (.*~.*) excludes the entire
-// destructor (including braces) at once.
+// Kept on a single line so the CI coverage regex (.*~.*) excludes the entire destructor (including braces) at once.
 AbstractInterfaceTwo::~AbstractInterfaceTwo() { std::puts("~AbstractInterfaceTwo::destructor\n"); };
 
 AA::AA(int valX, int valY, int valA) : Base(valA), valX(valX), valY(valY) {}
 
-// Kept on a single line so the CI coverage regex (.*~.*) excludes the entire
-// destructor (including braces) at once.
+// Kept on a single line so the CI coverage regex (.*~.*) excludes the entire destructor (including braces) at once.
 AA::~AA() { std::puts("~AA::destructor\n"); }
 
 void AA::interfacePrintOne() const {
