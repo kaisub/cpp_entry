@@ -33,7 +33,8 @@ const std::vector<Functionality> handled_cases = {
     Functionality::ClassArrays,
     Functionality::ClassInheritance,
     Functionality::ClassMoveable,
-    Functionality::SmartPointers
+    Functionality::SmartPointers,
+    Functionality::Tupples
 };
 
 // get functionalities that are not in handled_cases

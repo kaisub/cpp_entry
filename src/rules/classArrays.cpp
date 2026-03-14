@@ -16,6 +16,9 @@ MyContainer<T>::MyContainer(std::initializer_list<T> val) : data_buffer(val)
 }
 
 template<typename T>
+MyContainer<T>::~MyContainer() = default;
+
+template<typename T>
 MyContainer<T>::MyContainer(const MyContainer& other) : id(other.id), data_buffer(other.data_buffer) {
     cout << "Copy for id: " << id << '\n';
 }

@@ -150,3 +150,31 @@ TEST(MyContainerTest, SelfMoveAssignmentString) {
     });
     EXPECT_THAT(output, testing::HasSubstr("has: Self Move"));
 }
+
+// --- D0 (Deleting Destructor) Coverage ---
+
+TEST(MyContainerTest, HeapAllocationInt) {
+    auto* ptr = new MyContainer<int>({99, 88});
+    
+    std::string output = captureCout([&]() {
+        ptr->print();
+    });
+    
+    EXPECT_THAT(output, testing::HasSubstr("has: 99 88"));
+    
+    // Triggers the D0 deleting destructor variant
+    delete ptr; 
+}
+
+TEST(MyContainerTest, HeapAllocationString) {
+    auto* ptr = new MyContainer<std::string>({"Heap", "Alloc"});
+    
+    std::string output = captureCout([&]() {
+        ptr->print();
+    });
+    
+    EXPECT_THAT(output, testing::HasSubstr("has: Heap Alloc"));
+    
+    // Triggers the D0 deleting destructor variant
+    delete ptr; 
+}

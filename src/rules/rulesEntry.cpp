@@ -5,12 +5,17 @@
 #include "rules/classMoveable.h"
 #include "rules/rulesEntry.h"
 #include "rules/smartPointers.h"
+#include "rules/tupples.h"
 
 using std::cout;
 
 void rulesEntry(Functionality funct)
 {
     switch (funct) {
+    case Functionality::Tupples:
+        demonstrateTupples();
+        break;
+
     case Functionality::ClassArrays:
         demonstrateClassArrays();
         break;

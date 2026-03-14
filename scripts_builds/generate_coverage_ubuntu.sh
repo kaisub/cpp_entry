@@ -23,7 +23,6 @@ gcovr \
     --exclude-unreachable-branches \
     --exclude-lines-by-pattern '.*~.*' \
     --exclude-branches-by-pattern '.*(make_unique|make_shared|new |std::format|cout|data_buffer|std::string|std::vector).*' \
-    --exclude-function '.*(_GLOBAL__sub_I_|_static_initialization_and_destruction_0).*' \
     --exclude-noncode-lines \
     --html --html-details \
     -o coverage/index.html

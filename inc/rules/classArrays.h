@@ -18,7 +18,7 @@ class MyContainer {
 public:
     explicit MyContainer(std::initializer_list<T> val);
 
-    ~MyContainer() = default;
+    ~MyContainer();
 
     // Rule of Five
     MyContainer(const MyContainer& other);
