@@ -48,7 +48,9 @@ TEST(FunctionalityIsOfTypeTest, CorrectlyCategorizesFunctionality) {
     EXPECT_EQ(functionalityIsOfType(Functionality::ClassArrays), FunctionalityType::Rules);
     EXPECT_EQ(functionalityIsOfType(Functionality::ClassInheritance), FunctionalityType::Rules);
     EXPECT_EQ(functionalityIsOfType(Functionality::ClassMoveable), FunctionalityType::Rules);
+    EXPECT_EQ(functionalityIsOfType(Functionality::Lambdas), FunctionalityType::Rules);
     EXPECT_EQ(functionalityIsOfType(Functionality::SmartPointers), FunctionalityType::Rules);
+    EXPECT_EQ(functionalityIsOfType(Functionality::Templates), FunctionalityType::Rules);
     EXPECT_EQ(functionalityIsOfType(Functionality::Tupples), FunctionalityType::Rules);
 
     // Test Algorithms types

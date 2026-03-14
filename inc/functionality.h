@@ -5,7 +5,9 @@ enum class Functionality {
     ClassArrays,
     ClassInheritance,
     ClassMoveable,
+    Lambdas,
     SmartPointers,
+    Templates,
     Tupples,
     DummyAlgorithm, //FIXME just a placeholder
 };
@@ -26,7 +28,9 @@ enum class FunctionalityType {
     case Functionality::ClassArrays:
     case Functionality::ClassInheritance:
     case Functionality::ClassMoveable:
+    case Functionality::Lambdas:
     case Functionality::SmartPointers:
+    case Functionality::Templates:
     case Functionality::Tupples:
         return FunctionalityType::Rules;
 

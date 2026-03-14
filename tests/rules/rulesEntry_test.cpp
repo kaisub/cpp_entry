@@ -33,7 +33,9 @@ const std::vector<Functionality> handled_cases = {
     Functionality::ClassArrays,
     Functionality::ClassInheritance,
     Functionality::ClassMoveable,
+    Functionality::Lambdas,
     Functionality::SmartPointers,
+    Functionality::Templates,
     Functionality::Tupples
 };
 

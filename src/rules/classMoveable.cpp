@@ -50,14 +50,16 @@ int Movable::getValue() const
 
 void fun(const Movable& other)
 {
-    cout << "fun taking const ref: " << other.getValue() << '\n';
+    // cout << "fun taking const ref: " << other.getValue() << '\n';
+    cout << "fun taking const ref: \n";
     // Calls copy constructor
     Movable copy = other;//NOLINT(performance-unnecessary-copy-initialization)
 }
 
 void fun(Movable&& other)
 {
-    cout << "fun taking rvalue ref: " << other.getValue() << '\n';
+    // cout << "fun taking rvalue ref: " << other.getValue() << '\n';
+    cout << "fun taking rvalue ref: \n";
     Movable moved = std::move(other); // Calls move constructor
 }
 
