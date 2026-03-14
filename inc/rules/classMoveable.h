@@ -2,28 +2,28 @@
 
 #include <string>
 
+void demonstrateClassMoveable();
+
 class Movable {
 private:
-  int *data = nullptr;
-  std::string name = {};
+    int *data = nullptr;
+    std::string name = {};
 
 public:
-  explicit Movable(int value = 0);
-  explicit Movable(std::string name);
+    explicit Movable(int value = 0);
+    explicit Movable(std::string name);
 
-  ~Movable();
+    ~Movable();
 
-  Movable(const Movable &other);
-  Movable(Movable &&other) noexcept;
+    Movable(const Movable &other);
+    Movable(Movable &&other) noexcept;
 
-  operator const std::string &() const;
+    operator const std::string &() const;
 
-  // NO copy operator
-  Movable &operator=(const Movable &other) = delete;
-  // NO move operator
-  Movable &operator=(Movable &&other) = delete;
+    // NO copy operator
+    Movable &operator=(const Movable &other) = delete;
+    // NO move operator
+    Movable &operator=(Movable &&other) = delete;
 
-  int getValue() const;
+    int getValue() const;
 };
-
-void demonstrateClassMoveable();

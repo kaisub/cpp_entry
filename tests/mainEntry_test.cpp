@@ -94,6 +94,7 @@ class MockFunctionalityDispatcher : public IFunctionalityDispatcher {
 public:
     MOCK_METHOD(void, onDummyEntry, (), (override));
     MOCK_METHOD(void, onRulesEntry, (Functionality), (override));
+    MOCK_METHOD(void, onAlgorithmsEntry, (Functionality), (override));
 };
 
 // Helper template to avoid boilerplate code for dispatcher tests
@@ -136,6 +137,14 @@ auto expectRulesEntry = [](Functionality f)
     };
 };
 
+auto expectAlgorithmsEntry = [](Functionality f)
+{
+    return [f](MockFunctionalityDispatcher &mock)
+    {
+        EXPECT_CALL(mock, onAlgorithmsEntry(f)).Times(1);
+    };
+};
+
 // --- Test Data Generation ---
 // Automatically generates test parameters for all enum values using magic_enum
 std::vector<DispatcherTestParam> generateDispatcherTestParams()
@@ -143,17 +152,23 @@ std::vector<DispatcherTestParam> generateDispatcherTestParams()
     std::vector<DispatcherTestParam> params;
 
     // Iterate over all values defined in the Functionality enum
-    for (auto func : magic_enum::enum_values<Functionality>())
+    for (auto funct : magic_enum::enum_values<Functionality>())
     {
-        if (func == Functionality::DummyExamples)
-        {
-            // Specific expectation for the Dummy Entry
-            params.push_back({func, expectOnDummyEntry()});
-        }
-        else
-        {
-            // Default expectation for all other standard rules
-            params.push_back({func, expectRulesEntry(func)});
+        switch (functionalityIsOfType(funct)) {
+        case FunctionalityType::Dummy:
+            params.push_back({funct, expectOnDummyEntry()});
+            break;
+
+        case FunctionalityType::Rules:
+            params.push_back({funct, expectRulesEntry(funct)});
+            break;
+
+        case FunctionalityType::Algorithms:
+            params.push_back({funct, expectAlgorithmsEntry(funct)});
+            break;
+
+        case FunctionalityType::None:
+            break;
         }
     }
     return params;
@@ -182,6 +197,7 @@ TEST(CallProjectFunctionalityTest, IgnoresUnknownFunctionality) {
     // Expectation: none of the dispatcher methods should be called for unknown functionality
     EXPECT_CALL(mock, onDummyEntry()).Times(0);
     EXPECT_CALL(mock, onRulesEntry(testing::_)).Times(0);
+    EXPECT_CALL(mock, onAlgorithmsEntry(testing::_)).Times(0);
 
     // Act & Assert: Function should handle unknown functionality gracefully without throwing exceptions
     EXPECT_NO_THROW({ callProjectFunctionality(args, mock); });

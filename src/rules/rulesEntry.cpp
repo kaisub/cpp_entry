@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "rules/classArrays.h"
 #include "rules/classInheritance.h"
 #include "rules/classMoveable.h"
 #include "rules/rulesEntry.h"
@@ -7,23 +8,27 @@
 
 using std::cout;
 
-void rulesEntry(Functionality functionality) {
-  switch (functionality) {
-  case Functionality::ClassInheritance: {
-    demonstrateClassInheritance();
-  } break;
+void rulesEntry(Functionality funct)
+{
+    switch (funct) {
+    case Functionality::ClassArrays:
+        demonstrateClassArrays();
+        break;
 
-  case Functionality::ClassMoveable: {
-    demonstrateClassMoveable();
-  } break;
+    case Functionality::ClassInheritance:
+      demonstrateClassInheritance();
+      break;
 
-  case Functionality::SmartPointers: {
-    demonstrateSmartPointers();
-  } break;
+    case Functionality::ClassMoveable:
+        demonstrateClassMoveable();
+        break;
 
-  default:
-    cout << "unhandled functionality: " << static_cast<int>(functionality)
-         << '\n';
-    break;
-  }
+    case Functionality::SmartPointers:
+        demonstrateSmartPointers();
+        break;
+
+    default:
+        cout << "unhandled functionality: " << static_cast<int>(funct) << '\n';
+        break;
+    }
 }

@@ -1,15 +1,15 @@
 #pragma once
 
 struct Simple {
-  static inline int counter = 0;
+    static inline int counter = 0;
 
-  int id = counter++;
+    int id = counter++;
 
-  std::string name;
+    std::string name;
 
-  explicit Simple(const char *name = "");
+    explicit Simple(const char *name = "");
 
-  ~Simple();
+    ~Simple();
 };
 
 void pointersCreation();

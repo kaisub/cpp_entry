@@ -30,6 +30,7 @@ protected:
 };
 
 const std::vector<Functionality> handled_cases = {
+    Functionality::ClassArrays,
     Functionality::ClassInheritance,
     Functionality::ClassMoveable,
     Functionality::SmartPointers

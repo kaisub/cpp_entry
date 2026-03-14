@@ -6,9 +6,9 @@
 using std::cout;
 
 void demonstrateClassInheritance() {
-  cout << "\nDemonstrating class inheritance and abstract interfaces\n\n";
-  AA val{10, 20};
-  val.print();
+    cout << "\nDemonstrating class inheritance and abstract interfaces\n\n";
+    AA val{10, 20};
+    val.print();
 }
 
 Base::Base(int val) : val(val) {}
@@ -30,20 +30,20 @@ AA::AA(int valX, int valY, int valA) : Base(valA), valX(valX), valY(valY) {}
 AA::~AA() { std::puts("~AA::destructor\n"); }
 
 void AA::interfacePrintOne() const {
-  cout << "AA::interfacePrintOne() called" << '\n';
+    cout << "AA::interfacePrintOne() called" << '\n';
 }
 
 void AA::interfacePrintTwo() const {
-  cout << "AA::interfacePrintTwo() called" << '\n';
+    cout << "AA::interfacePrintTwo() called" << '\n';
 }
 
 void AA::print() const {
-  cout << "*** AA::print() ***" << '\n';
+    cout << "*** AA::print() ***" << '\n';
 
-  Base::print();
-  interfacePrintOne();
-  interfacePrintTwo();
-  cout << "x: " << valX << " y: " << valY << " a: " << val << '\n';
+    Base::print();
+    interfacePrintOne();
+    interfacePrintTwo();
+    cout << "x: " << valX << " y: " << valY << " a: " << val << '\n';
 
-  cout << '\n';
+    cout << '\n';
 }

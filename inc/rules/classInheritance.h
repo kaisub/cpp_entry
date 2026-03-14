@@ -6,43 +6,43 @@ void demonstrateClassInheritance();
 
 class Base {
 public:
-  explicit Base(int val = 0);
-  virtual ~Base();
+    explicit Base(int val = 0);
+    virtual ~Base();
 
-  virtual void print() const;
+    virtual void print() const;
 
 protected:
-  int val;
+    int val;
 };
 
 class AbstractInterfaceOne {
 public:
-  virtual ~AbstractInterfaceOne();
+    virtual ~AbstractInterfaceOne();
 
-  virtual void interfacePrintOne() const = 0;
+    virtual void interfacePrintOne() const = 0;
 };
 
 class AbstractInterfaceTwo {
 public:
-  virtual ~AbstractInterfaceTwo();
+    virtual ~AbstractInterfaceTwo();
 
-  virtual void interfacePrintTwo() const = 0;
+    virtual void interfacePrintTwo() const = 0;
 };
 
 class AA final : public Base,
                  public AbstractInterfaceOne,
                  public AbstractInterfaceTwo {
 public:
-  AA(int valX, int valY, int valA = 0);
-  ~AA() override;
+    AA(int valX, int valY, int valA = 0);
+    ~AA() override;
 
-  void interfacePrintOne() const override;
+    void interfacePrintOne() const override;
 
-  void interfacePrintTwo() const override;
+    void interfacePrintTwo() const override;
 
-  void print() const override;
+    void print() const override;
 
 private:
-  int valX;
-  int valY;
+    int valX;
+    int valY;
 };

@@ -1,13 +1,18 @@
 #include <span>
 
-#include "dummy/dummyFunc.h"
 #include "functionalityDispatcher.h"
+#include "algorithms/algorithmsEntry.h"
+#include "dummy/dummyFunc.h"
 #include "rules/rulesEntry.h"
 
 void FunctionalityDispatcher::onDummyEntry() {
-  dummyEntry();
+    dummyEntry();
 }
 
-void FunctionalityDispatcher::onRulesEntry(Functionality func) {
-  rulesEntry(func);
+void FunctionalityDispatcher::onRulesEntry(Functionality funct) {
+    rulesEntry(funct);
+}
+
+void FunctionalityDispatcher::onAlgorithmsEntry(Functionality funct) {
+    algorithmsEntry(funct);
 }

@@ -2,4 +2,4 @@
 
 #include "functionality.h"
 
-void rulesEntry(Functionality);
+void algorithmsEntry(Functionality);
