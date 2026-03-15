@@ -1,12 +1,5 @@
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
-
+#include "stdafx.h"
 #include "rules/classArrays.h"
-#include "common/common.h"
 
 TEST(MyContainerTest, ConstructorWithInitializerList) {
     std::string output = captureCout([&]() {

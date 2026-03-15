@@ -1,5 +1,4 @@
-#include <gtest/gtest.h>
-
+#include "stdafx.h"
 #include "dummy/dummyDataProcessor.h"
 
 // -----------------------------------------------------------------------------

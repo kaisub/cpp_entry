@@ -138,6 +138,11 @@ if(BUILD_TESTING)
     # Add common folder to include paths for unit_tests target
     target_include_directories(unit_tests PRIVATE tests)
 
+    target_precompile_headers(unit_tests
+        PRIVATE
+            "tests/stdafx.h"
+    )
+
     # Link tests to the main library (which includes magic_enum) and GTest
     target_link_libraries(unit_tests PRIVATE ${PROJECT_NAME}_lib GTest::gtest_main GTest::gmock_main)
     

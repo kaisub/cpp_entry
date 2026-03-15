@@ -1,12 +1,5 @@
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
-#include <iostream>
-#include <sstream>
-#include <string>
-
+#include "stdafx.h"
 #include "rules/smartPointers.h"
-#include "common/common.h"
-
 
 TEST(SmartPointersTest, PointersCreationOutputsExpectedStrings) {
     std::string output = captureCout([]() { pointersCreation(); });

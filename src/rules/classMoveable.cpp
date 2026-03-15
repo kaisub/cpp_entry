@@ -24,7 +24,7 @@ Movable::~Movable()
 
 Movable::Movable(const Movable& other)
 {
-    cout << std::format("Movable copy construct: {} ", other.getValue());
+    cout << std::format("Movable copy construct");
     name = other.name;
     if (other.data != nullptr) {
         data = new int(*other.data);
@@ -33,7 +33,7 @@ Movable::Movable(const Movable& other)
 
 Movable::Movable(Movable&& other) noexcept : data(other.data), name(std::move(other.name))
 {
-    // std::printf("Movable move construct: %d\n", other.getValue());
+    std::printf("Movable move construct\n");
     other.data = nullptr;
 }
 
@@ -43,14 +43,8 @@ Movable::operator const std::string&() const
     return name;
 }
 
-int Movable::getValue() const
-{
-    return data != nullptr ? *data : 0;
-}
-
 void fun(const Movable& other)
 {
-    // cout << "fun taking const ref: " << other.getValue() << '\n';
     cout << "fun taking const ref: \n";
     // Calls copy constructor
     Movable copy = other;//NOLINT(performance-unnecessary-copy-initialization)
@@ -58,7 +52,6 @@ void fun(const Movable& other)
 
 void fun(Movable&& other)
 {
-    // cout << "fun taking rvalue ref: " << other.getValue() << '\n';
     cout << "fun taking rvalue ref: \n";
     Movable moved = std::move(other); // Calls move constructor
 }
@@ -85,11 +78,11 @@ void demonstrateClassMoveable()
 
     // lambda capture by copy -> const construct
     [=]() {
-        std::cout << "copy lambda: " << mo7.getValue() << '\n';
+        std::cout << "copy lambda: \n";
     }();
     // lambda capture by const ref -> no new object
     [&ref = std::as_const(mo7)]() {
-        std::cout << "move lambda: " << ref.getValue() << '\n';
+        std::cout << "move lambda: " << ref.name << '\n';
     }();
     cout << '\n';
 }

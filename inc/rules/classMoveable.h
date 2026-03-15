@@ -5,7 +5,7 @@
 void demonstrateClassMoveable();
 
 class Movable {
-private:
+public:
     int *data = nullptr;
     std::string name = {};
 
@@ -24,6 +24,4 @@ public:
     Movable &operator=(const Movable &other) = delete;
     // NO move operator
     Movable &operator=(Movable &&other) = delete;
-
-    int getValue() const;
 };

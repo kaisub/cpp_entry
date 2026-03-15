@@ -1,12 +1,4 @@
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <magic_enum.hpp>
-#include <vector>
-#include <algorithm>
-
+#include "stdafx.h"
 #include "rules/rulesEntry.h"
 #include "functionality.h"
 
