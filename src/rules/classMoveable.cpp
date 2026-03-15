@@ -9,7 +9,7 @@ using std::cout;
 Movable::Movable(int value)
 {
     cout << std::format("Movable construct: {}\n", value);
-    data = new int(value);
+    data = std::make_unique<int>(value);
 }
 
 Movable::Movable(std::string name) : name(std::move(name))
@@ -17,24 +17,18 @@ Movable::Movable(std::string name) : name(std::move(name))
     cout << std::format("Movable construct with name: {}\n", this->name);
 }
 
-Movable::~Movable()
-{
-    delete data;
-}
-
 Movable::Movable(const Movable& other)
 {
     cout << std::format("Movable copy construct");
     name = other.name;
     if (other.data != nullptr) {
-        data = new int(*other.data);
+        data = std::make_unique<int>(*other.data);
     }
 }
 
-Movable::Movable(Movable&& other) noexcept : data(other.data), name(std::move(other.name))
+Movable::Movable(Movable&& other) noexcept : data(std::move(other.data)), name(std::move(other.name))
 {
     std::printf("Movable move construct\n");
-    other.data = nullptr;
 }
 
 Movable::operator const std::string&() const
