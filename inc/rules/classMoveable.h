@@ -5,7 +5,7 @@
 void demonstrateClassMoveable();
 
 class Movable {
-public:
+private:
     int *data = nullptr;
     std::string name = {};
 

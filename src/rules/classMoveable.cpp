@@ -82,7 +82,7 @@ void demonstrateClassMoveable()
     }();
     // lambda capture by const ref -> no new object
     [&ref = std::as_const(mo7)]() {
-        std::cout << "move lambda: " << ref.name << '\n';
+        std::cout << "move lambda: " << static_cast<const std::string&>(ref) << '\n';
     }();
     cout << '\n';
 }
