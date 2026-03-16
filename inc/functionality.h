@@ -9,7 +9,7 @@ enum class Functionality {
     SmartPointers,
     Templates,
     Tupples,
-    DummyAlgorithm, //FIXME just a placeholder
+    PrintDir,
 };
 
 enum class FunctionalityType {
@@ -34,7 +34,7 @@ enum class FunctionalityType {
     case Functionality::Tupples:
         return FunctionalityType::Rules;
 
-    case Functionality::DummyAlgorithm:
+    case Functionality::PrintDir:
         return FunctionalityType::Algorithms;
 
     default:

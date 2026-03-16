@@ -1,5 +1,6 @@
+
 #include "stdafx.h"
-#include "rules/rulesEntry.h"
+#include "algorithms/algorithmsEntry.h"
 #include "functionality.h"
 #include "common/entryTestHelpers.h"
 
@@ -7,40 +8,34 @@ using testing::HasSubstr;
 using testing::Not;
 
 const std::vector<Functionality> handled_cases = {
-    Functionality::ClassArrays,
-    Functionality::ClassInheritance,
-    Functionality::ClassMoveable,
-    Functionality::Lambdas,
-    Functionality::SmartPointers,
-    Functionality::Templates,
-    Functionality::Tupples,
+    Functionality::PrintDir
 };
 
 // Test for handled Functionality enums
-class RulesEntryHandledTest : public CoutRedirectTest,
-                              public testing::WithParamInterface<Functionality> {};
+class AlgorithmsEntryHandledTest : public CoutRedirectTest,
+                                   public testing::WithParamInterface<Functionality> {};
 
-TEST_P(RulesEntryHandledTest, ExecutesWithoutUnhandledMessage) {
-    EXPECT_NO_THROW({ rulesEntry(GetParam()); });
+TEST_P(AlgorithmsEntryHandledTest, ExecutesWithoutUnhandledMessage) {
+    EXPECT_NO_THROW({ algorithmsEntry(GetParam()); });
     // Verify that we do NOT hit the default case
     EXPECT_THAT(buffer.str(), Not(HasSubstr("unhandled functionality")));
 }
 
 INSTANTIATE_TEST_SUITE_P(
     HandledCases,
-    RulesEntryHandledTest,
+    AlgorithmsEntryHandledTest,
     testing::ValuesIn(handled_cases),
     funcPrinter);
 
 // Test for NOT handled Functionality enums
-class RulesEntryUnhandledTest : public CoutRedirectTest,
+class AlgorithmsEntryUnhandledTest : public CoutRedirectTest,
                                 public testing::WithParamInterface<Functionality>
 {
 };
 
-TEST_P(RulesEntryUnhandledTest, PrintsUnhandledMessage)
+TEST_P(AlgorithmsEntryUnhandledTest, PrintsUnhandledMessage)
 {
-    EXPECT_NO_THROW({ rulesEntry(GetParam()); });
+    EXPECT_NO_THROW({ algorithmsEntry(GetParam()); });
     // Verify that we DO hit the default case with correct ID
     std::string expected = "unhandled functionality: " + std::to_string(static_cast<int>(GetParam())) + "\n";
     EXPECT_EQ(buffer.str(), expected);
@@ -48,6 +43,6 @@ TEST_P(RulesEntryUnhandledTest, PrintsUnhandledMessage)
 
 INSTANTIATE_TEST_SUITE_P(
     UnhandledCases,
-    RulesEntryUnhandledTest,
+    AlgorithmsEntryUnhandledTest,
     testing::ValuesIn(GetUnhandledFunctionalities(handled_cases)),
     funcPrinter);

@@ -54,7 +54,7 @@ TEST(FunctionalityIsOfTypeTest, CorrectlyCategorizesFunctionality) {
     EXPECT_EQ(functionalityIsOfType(Functionality::Tupples), FunctionalityType::Rules);
 
     // Test Algorithms types
-    EXPECT_EQ(functionalityIsOfType(Functionality::DummyAlgorithm), FunctionalityType::Algorithms);
+    EXPECT_EQ(functionalityIsOfType(Functionality::PrintDir), FunctionalityType::Algorithms);
 
     // Test default/None case for an unknown value
     EXPECT_EQ(functionalityIsOfType(static_cast<Functionality>(999)), FunctionalityType::None);

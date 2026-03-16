@@ -58,3 +58,16 @@ TEST(MovableTest, DemonstrateClassMoveableIntegration) {
     EXPECT_THAT(output, HasSubstr("fun taking rvalue ref: ")); // 200
     EXPECT_THAT(output, HasSubstr("mo7 name: ->Movable operator const std::string&: mo7<- mo7"));
 }
+
+TEST(MovableTest, CopyConstructorWithNullData) {
+    std::string output = captureCout([&]() {
+        // String constructor leaves 'data' as nullptr
+        Movable original("null_data_test");
+
+        // Copying it evaluates 'if (other.data != nullptr)' to false
+        Movable copy(original);
+    });
+
+    EXPECT_THAT(output, HasSubstr("Movable construct with name: null_data_test"));
+    EXPECT_THAT(output, HasSubstr("Movable copy construct"));
+}
