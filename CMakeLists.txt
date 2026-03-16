@@ -170,22 +170,44 @@ if(CPPCHECK_PROGRAM)
     )
 endif()
 
-# --- Static Analysis: Clang-Tidy ---
+# --- Static Analysis: Clang-Tidy (Parallel & Incremental) ---
 # Search for clang-tidy with explicit common installation paths
 find_program(CLANG_TIDY_EXE
     NAMES clang-tidy
     PATHS "C:/Program Files/LLVM/bin" "C:/Program Files (x86)/LLVM/bin"
 )
 
-# Modern Clang-Tidy Target (Uses compile_commands.json from Ninja)
 if(CLANG_TIDY_EXE)
+    # Create a directory to store empty stamp files for incremental tracking
+    set(TIDY_STAMP_DIR "${CMAKE_BINARY_DIR}/tidy_stamps")
+    file(MAKE_DIRECTORY "${TIDY_STAMP_DIR}")
+    
+    set(TIDY_TARGETS "")
+    set(ALL_TIDY_SOURCES ${SRC_LIST} ${CMAKE_SOURCE_DIR}/main.cpp)
+
+    foreach(SRC_FILE IN LISTS ALL_TIDY_SOURCES)
+        # Create a unique stamp file name based on MD5 to prevent collisions from identically named files in different dirs
+        string(MD5 FILE_HASH "${SRC_FILE}")
+        get_filename_component(FILE_NAME "${SRC_FILE}" NAME)
+        set(STAMP_FILE "${TIDY_STAMP_DIR}/${FILE_NAME}_${FILE_HASH}.stamp")
+
+        # Define an isolated, file-specific linting command
+        add_custom_command(
+            OUTPUT "${STAMP_FILE}"
+            COMMAND ${CLANG_TIDY_EXE} -p=${CMAKE_BINARY_DIR} "${SRC_FILE}"
+            COMMAND ${CMAKE_COMMAND} -E touch "${STAMP_FILE}"
+            DEPENDS "${SRC_FILE}"
+            COMMENT "Clang-Tidy: ${FILE_NAME}"
+            VERBATIM
+        )
+        list(APPEND TIDY_TARGETS "${STAMP_FILE}")
+    endforeach()
+
+    # The main target now relies on the stamp files, forcing Ninja to build them in parallel
     add_custom_target(
         run_tidy
-        COMMAND ${CLANG_TIDY_EXE}
-            -p=${CMAKE_BINARY_DIR}        # Point to the build directory containing JSON DB
-            ${SRC_LIST}                   # includes all .cpp from subdirectories
-            main.cpp
+        DEPENDS ${TIDY_TARGETS}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMENT "Running Clang-Tidy analysis using compile_commands.json..."
+        COMMENT "Running parallel & incremental Clang-Tidy analysis..."
     )
 endif()
