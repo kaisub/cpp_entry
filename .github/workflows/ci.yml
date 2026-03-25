@@ -7,11 +7,28 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
+    # Firewall CI/CD - block unauthorized traffic
+    - name: Harden Runner
+      uses: step-security/harden-runner@v2 # Recommended to use SHA for full security
+      with:
+        egress-policy: block
+        allowed-endpoints: >
+          azure.archive.ubuntu.com:80
+          github.com:443
+          api.github.com:443
+          esm.ubuntu.com:443
+          motd.ubuntu.com:443
+          packages.microsoft.com:443
+          ppa.launchpadcontent.net:443
+
     - name: Checkout repository
       uses: actions/checkout@v4
 
